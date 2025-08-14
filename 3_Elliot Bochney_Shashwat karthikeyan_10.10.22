@@ -1,0 +1,220 @@
+#********LIBRARY********
+import cv2
+import numpy
+import os.path
+import json
+
+#******Opens file system for image**********
+print ("Save your original image in the same folder as this program.")
+filename_valid = False
+filenamefi_valid = False
+while filename_valid == False:
+    filename = input("Enter the name of your file, including the "\
+                                 "extension, and then press 'enter': ")
+    if os.path.isfile(filename) == True:
+        filename_valid = True
+    else:
+        print ("Something was wrong with that filename. Please try again.")
+
+
+
+original_image = cv2.imread(filename,1)
+grayscale_image_simple = cv2.imread(filename, 0)
+grayscale_image = cv2.cvtColor(grayscale_image_simple, cv2.COLOR_GRAY2BGR)
+
+cv2.namedWindow('Original Image')
+cv2.namedWindow('Grayscale Image')
+cv2.namedWindow('Red Parts of Image')
+cv2.namedWindow('Yellow Parts of Image')
+cv2.namedWindow('Violet Parts of Image')
+cv2.namedWindow('amber Parts of Image')
+cv2.namedWindow('chartreuse Parts of Image')
+cv2.namedWindow('green Parts of Image')
+cv2.namedWindow('Customized Image')
+
+cv2.createTrackbar("custom slider","Customized Image",21,42,lambda x:None)
+cv2.createTrackbar("red slider","Customized Image",122,255,lambda x:None)
+cv2.createTrackbar("amber slider","Customized Image",95,191,lambda x:None)
+cv2.createTrackbar("yellow slider","Customized Image",122,255,lambda x:None)
+cv2.createTrackbar("chartreuse slider","Customized Image",117,233,lambda x:None)
+cv2.createTrackbar("green slider","Customized Image",122,255,lambda x:None)
+cv2.createTrackbar("violet slider","Customized Image",97,195,lambda x:None)
+#cv2.createTrackbar("FROGS!","Customized Image",100,255,lambda x:None)
+#cv2.createTrackbar("SHELL!","Customized Image",100,255,lambda x:None)
+
+import json
+
+image_height = original_image.shape[0]
+image_width = original_image.shape[1]
+image_channels = original_image.shape[2]
+keypressed = 0
+while keypressed != 27 and keypressed != ord("s"):
+    #names of all the colors to a tertiary level
+    red_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    orange_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    amber_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    yellow_paper = numpy.zeros((image_height,image_width,image_channels),numpy.uint8)
+    chartreuse_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    green_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    Turquoise_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    blue_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    violet_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)
+    magenta_paper = numpy.zeros((image_height,image_width,image_channels), numpy.uint8)        
+    
+    grayscale_break_0 = cv2.getTrackbarPos("custom slider","Customized Image")
+    grayscale_break_1 = cv2.getTrackbarPos("red slider","Customized Image")
+    grayscale_break_2 = cv2.getTrackbarPos("amber slider","Customized Image")
+    grayscale_break_3 = cv2.getTrackbarPos("yellow slider","Customized Image")
+    grayscale_break_4 = cv2.getTrackbarPos("violet slider","Customized Image")
+    grayscale_break_5 = cv2.getTrackbarPos("green slider","Customized Image")
+    grayscale_break_6 = cv2.getTrackbarPos("chartreuse slider","Customized Image")
+
+    red = [0,0,grayscale_break_1]
+    yellow = [0,grayscale_break_3,grayscale_break_1]
+    violet = [grayscale_break_1,0,grayscale_break_4]  
+    amber = [0,grayscale_break_2,grayscale_break_1]
+    green = [0,grayscale_break_5,0]
+    chartreuse =[0,grayscale_break_1, grayscale_break_6]
+
+    color_dict = {
+        "red_val": red,
+        "yellow_val": yellow,
+        "violet_val": violet,
+        "amber_val": amber,
+        "grenn_val": green,
+        "chartreuse_val": chartreuse
+
+    }
+    json_object = json.dumps(color_dict, indent=4)
+
+
+    chartreuse = [0,grayscale_break_1,grayscale_break_6]
+    red_paper[0:image_height,0:image_width, 0:image_channels] = red
+    #Tangelo_paper[0:image_height,0:image_width, 0:image_channels] = [0,0,0]
+    #orange_paper[0:image_height,0:image_width, 0:image_channels] = [0,165,255]
+    amber_paper[0:image_height,0:image_width, 0:image_channels] = amber
+    yellow_paper[0:image_height,0:image_width, 0:image_channels] = yellow
+    chartreuse_paper[0:image_height,0:image_width, 0:image_channels] = chartreuse
+    green_paper[0:image_height,0:image_width, 0:image_channels] = green
+    #Turquoise_paper[0:image_height,0:image_width, 0:image_channels] = [200,213,48]
+    #blue_paper[0:image_height,0:image_width, 0:image_channels] = [255,0,0]
+    #periwinkle_paper[0:image_height,0:image_width, 0:image_channels] = [100,80,80]
+    violet_paper[0:image_height,0:image_width, 0:image_channels] = violet
+    #magenta_paper[0:image_height,0:image_width, 0:image_channels] = [100,0,100]
+    #white_paper[0:image_height,0:image_width, 0:image_channels] = [255,255,255]
+    #black_paper[0:image_height,0:image_width, 0:image_channels] = [0,0,0]
+
+
+    #grayscale_break_2 = cv2.getTrackbarPos("FROGS!","Customized Image")
+    #grayscale_break = cv2.getTrackbarPos("SHELL!","Customized Image")
+
+    min_grayscale_for_red = [0,0,0]
+    max_grayscale_for_red = [grayscale_break_0,grayscale_break_0,grayscale_break_0]
+   
+    min_grayscale_for_yellow = [grayscale_break_0+1,grayscale_break_0+1, grayscale_break_0+1]
+    max_grayscale_for_yellow = [grayscale_break_0*2,grayscale_break_0*2, grayscale_break_0*2]
+   
+    min_grayscale_for_violet = [grayscale_break_0*2+1,grayscale_break_0*2+1,grayscale_break_0*2+1]
+    max_grayscale_for_violet = [grayscale_break_0*3,grayscale_break_0*3,grayscale_break_0*3]
+
+    min_grayscale_for_amber = [grayscale_break_0*3+1,grayscale_break_0*3+1,grayscale_break_0*3+1]
+    max_grayscale_for_amber = [grayscale_break_0*4,grayscale_break_0*4,grayscale_break_0*4]
+
+    min_grayscale_for_chartreuse_ = [grayscale_break_0*4+1,grayscale_break_0*4+1,grayscale_break_0*4+1]
+    max_grayscale_for_chartreuse_ = [grayscale_break_0*5,grayscale_break_0*5,grayscale_break_0*5]
+
+    min_grayscale_for_green = [grayscale_break_0*5+1,grayscale_break_0*5+1,grayscale_break_0*5+1]
+    max_grayscale_for_green = [255,255,255]
+
+    #min_grayscale_for_Turquoise = [grayscale_break_0*5+1,grayscale_break_0*5+1,grayscale_break_0*5+1]
+    #max_grayscale_for_Turquoise = [grayscale_break_0*5,grayscale_break_0*6,grayscale_break_0*6]
+
+    #red = [0,0,grayscale_break_1]
+    #yellow = [0,grayscale_break_3,grayscale_break_3]
+    #violet = [grayscale_break_4,0,grayscale_break_4]
+    #amber = [0,grayscale_break_2,grayscale_break_1]
+    #green = [0,grayscale_break_5,0]
+    #chartreuse = [0,grayscale_break_6,grayscale_break_6]
+
+
+    min_grayscale_for_red = numpy.array(min_grayscale_for_red, dtype = "uint8")
+    max_grayscale_for_red = numpy.array(max_grayscale_for_red, dtype = "uint8")
+   
+    min_grayscale_for_yellow = numpy.array(min_grayscale_for_yellow, dtype = "uint8")
+    max_grayscale_for_yellow = numpy.array(max_grayscale_for_yellow, dtype = "uint8")
+   
+    min_grayscale_for_violet = numpy.array(min_grayscale_for_violet, dtype = "uint8")
+    max_grayscale_for_violet = numpy.array(max_grayscale_for_violet, dtype = "uint8")
+
+    min_grayscale_for_amber = numpy.array(min_grayscale_for_amber, dtype = "uint8")
+    max_grayscale_for_amber = numpy.array(max_grayscale_for_amber, dtype = "uint8")
+
+    min_grayscale_for_chartreuse_ = numpy.array(min_grayscale_for_chartreuse_, dtype = "uint8")
+    max_grayscale_for_chartreuse_ = numpy.array(max_grayscale_for_chartreuse_, dtype = "uint8")
+
+    min_grayscale_for_green = numpy.array(min_grayscale_for_green, dtype = "uint8")
+    max_grayscale_for_green = numpy.array(max_grayscale_for_green, dtype = "uint8")
+
+
+    block_all_but_the_red_parts = cv2.inRange(grayscale_image,
+                                          min_grayscale_for_red,
+                                          max_grayscale_for_red)
+    block_all_but_the_yellow_parts = cv2.inRange(grayscale_image,
+                                             min_grayscale_for_yellow,
+                                             max_grayscale_for_yellow)
+    block_all_but_the_violet_parts = cv2.inRange(grayscale_image,
+                                          min_grayscale_for_violet,
+                                          max_grayscale_for_violet)
+    
+    block_all_but_the_amber_parts = cv2.inRange(grayscale_image,
+                                          min_grayscale_for_amber,
+                                          max_grayscale_for_amber)
+
+    block_all_but_the_chartreuse_parts = cv2.inRange(grayscale_image,
+                                          min_grayscale_for_chartreuse_,
+                                          max_grayscale_for_chartreuse_)
+
+    block_all_but_the_green_parts = cv2.inRange(grayscale_image,
+                                          min_grayscale_for_green,
+                                          max_grayscale_for_green)
+
+    
+
+    red_parts_of_image = cv2.bitwise_or(red_paper, red_paper, mask = block_all_but_the_red_parts)
+    yellow_parts_of_image = cv2.bitwise_or(yellow_paper, yellow_paper, mask = block_all_but_the_yellow_parts)
+    violet_parts_of_image = cv2.bitwise_or(violet_paper, violet_paper, mask = block_all_but_the_violet_parts)
+    amber_parts_of_image = cv2.bitwise_or(amber_paper, amber_paper, mask = block_all_but_the_amber_parts)
+    chartreuse_parts_of_image = cv2.bitwise_or(chartreuse_paper, chartreuse_paper, mask = block_all_but_the_chartreuse_parts)
+    green_parts_of_image = cv2.bitwise_or(green_paper, green_paper, mask = block_all_but_the_green_parts)
+
+
+
+    customized_image = cv2.bitwise_or(red_parts_of_image, yellow_parts_of_image)
+    customized_image = cv2.bitwise_or(customized_image, violet_parts_of_image)
+    customized_image = cv2.bitwise_or(customized_image, amber_parts_of_image)
+    customized_image = cv2.bitwise_or(customized_image, chartreuse_parts_of_image)
+    customized_image = cv2.bitwise_or(customized_image, green_parts_of_image)
+   
+
+    cv2.imshow('Original Image', original_image)
+    cv2.imshow('Grayscale Image',grayscale_image)
+    cv2.imshow('Red Parts of Image',red_parts_of_image)
+    cv2.imshow('Yellow Parts of Image',yellow_parts_of_image)
+    cv2.imshow('Violet Parts of Image',violet_parts_of_image)
+    cv2.imshow('green Parts of Image', green_parts_of_image)
+    cv2.imshow('chartreuse Parts of Image', chartreuse_parts_of_image)
+    cv2.imshow('amber Parts of Image', amber_parts_of_image)
+    cv2.imshow('Customized Image',customized_image)
+   
+    keypressed = cv2.waitKey(30)
+
+
+
+#****** Exit and save******
+if keypressed == 27:
+    cv2.destroyAllWindows()
+elif keypressed == ord('s'):
+    filenameFin = input("what do you want the image to save as': ")
+    cv2.imwrite('photo_GS_1.jpg',grayscale_image)
+    cv2.imwrite(filenameFin + ".jpg", customized_image)
+    cv2.destroyAllWindows()
